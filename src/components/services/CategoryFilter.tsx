@@ -10,15 +10,6 @@ interface CategoryFilterProps {
 const CategoryFilter = ({ selected, onChange }: CategoryFilterProps) => {
   return (
     <div className="space-y-3">
-      {/* Section Label */}
-      <div className="flex items-center gap-2">
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-700" />
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Filter Kategori
-        </span>
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-700" />
-      </div>
-
       {/* Filter Pills */}
       <div className="flex flex-wrap items-center gap-3">
         {/* Button "Semua" - Special styling */}
@@ -106,26 +97,6 @@ const CategoryFilter = ({ selected, onChange }: CategoryFilterProps) => {
           </Button>
         ))}
       </div>
-
-      {/* Active filter indicator */}
-      {selected !== "all" && (
-        <div className="flex items-center gap-2 text-sm">
-          <div className="flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 dark:bg-blue-950/30">
-            <span className="text-blue-600 dark:text-blue-400">
-              Filter aktif:
-            </span>
-            <span className="font-semibold text-blue-700 dark:text-blue-300">
-              {categories.find((c) => c.id === selected)?.label}
-            </span>
-          </div>
-          <button
-            onClick={() => onChange("all")}
-            className="text-sm text-slate-500 underline-offset-2 transition-all hover:text-blue-600 hover:underline dark:text-slate-400 dark:hover:text-blue-400"
-          >
-            Reset filter
-          </button>
-        </div>
-      )}
     </div>
   );
 };

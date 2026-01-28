@@ -70,7 +70,7 @@ const Services = () => {
         </div>
       </div>
 
-      {/* 🔍 Search & Filter Section */}
+      {/* search & Filter Section */}
       <div className="mb-10 space-y-6">
         {/* Search Bar */}
         <div className="mx-auto max-w-2xl">

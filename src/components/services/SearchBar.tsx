@@ -18,7 +18,7 @@ const SearchBar = ({
   return (
     <div className={cn("relative", className)}>
       {/* Search Icon */}
-      <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+      <Search className="absolute left-4 top-1/2 h-51 w-5 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
 
       {/* Input Field */}
       <Input

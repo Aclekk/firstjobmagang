@@ -1,4 +1,4 @@
-import { useParams, Link, Navigate } from "react-router-dom";
+import { useParams, Link, Navigate, useNavigate } from "react-router-dom";
 import {
   Mail,
   PenTool,
@@ -17,8 +17,10 @@ import {
   FileText,
   Users,
   Calendar,
+  Lock,
 } from "lucide-react";
 import { getServiceById, categories } from "@/data/services";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +39,8 @@ const iconMap: Record<string, LucideIcon> = {
 
 const ServiceDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const service = id ? getServiceById(id) : undefined;
 
   if (!service) {
@@ -45,6 +49,25 @@ const ServiceDetail = () => {
 
   const IconComponent = iconMap[service.icon] || HelpCircle;
   const category = categories.find((c) => c.id === service.category);
+
+  // ✅ Check apakah layanan butuh login atau tidak
+  // VPN adalah satu-satunya layanan yang PUBLIC (ga perlu login)
+  const isPublicService = service.id === "vpn";
+
+  // Handler untuk tombol "Ajukan Sekarang"
+  const handleRequestService = () => {
+    // Kalau layanan public (VPN) atau user sudah login, langsung ke form
+    if (isPublicService || isAuthenticated) {
+      navigate(`/request/${service.id}`);
+    } else {
+      // Kalau belum login, redirect ke login dengan state
+      navigate("/login", {
+        state: {
+          from: `/request/${service.id}`,
+        },
+      });
+    }
+  };
 
   return (
     <div className="container py-10">
@@ -219,19 +242,40 @@ const ServiceDetail = () => {
                   <h3 className="mb-2 text-xl font-bold text-slate-900 dark:text-slate-50">
                     Ajukan Layanan
                   </h3>
+
+                  {/* Badge untuk layanan yang butuh login */}
+                  {!isPublicService && !isAuthenticated && (
+                    <div className="mb-3 flex items-center justify-center gap-2 rounded-lg bg-amber-50 px-3 py-2 dark:bg-amber-950/20">
+                      <Lock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                      <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                        Perlu Login
+                      </span>
+                    </div>
+                  )}
+
                   <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                    Klik tombol di bawah untuk mengisi formulir pengajuan{" "}
-                    <span className="font-semibold">{service.title}</span>.
+                    {!isPublicService && !isAuthenticated
+                      ? "Anda perlu login terlebih dahulu untuk mengajukan layanan ini."
+                      : `Klik tombol di bawah untuk mengisi formulir pengajuan ${service.title}.`}
                   </p>
                 </div>
+
+                {/* Button dengan onClick handler */}
                 <Button
-                  asChild
+                  onClick={handleRequestService}
                   className="w-full bg-gradient-to-r from-blue-600 to-blue-500 py-6 text-base font-semibold shadow-lg hover:from-blue-700 hover:to-blue-600 hover:shadow-xl dark:from-blue-500 dark:to-blue-600"
                 >
-                  <Link to={`/request/${service.id}`}>
-                    Ajukan Sekarang
-                    <ArrowLeft className="ml-2 h-5 w-5 rotate-180" />
-                  </Link>
+                  {!isPublicService && !isAuthenticated ? (
+                    <>
+                      <Lock className="mr-2 h-5 w-5" />
+                      Login untuk Ajukan
+                    </>
+                  ) : (
+                    <>
+                      Ajukan Sekarang
+                      <ArrowLeft className="ml-2 h-5 w-5 rotate-180" />
+                    </>
+                  )}
                 </Button>
               </CardContent>
             </Card>
