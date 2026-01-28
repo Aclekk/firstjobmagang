@@ -5,156 +5,244 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* 
+========================================
+DESIGN SYSTEM - TEMA BIRU CORPORATE ELEGANT
+========================================
+Semua warna harus dalam format HSL untuk konsistensi.
+Tema ini dirancang untuk tampilan profesional dan mewah.
 */
 
 @layer base {
   :root {
-    --background: 209 40% 96%;
-    --foreground: 222 47% 11%;
+    /* Background & Foreground - Warna dasar putih kebiruan yang lembut */
+    --background: 210 40% 98%; /* Putih dengan sedikit hint biru - memberi kesan bersih & fresh */
+    --foreground: 215 25% 20%; /* Teks gelap kebiruan - lebih soft dari hitam murni */
 
-    --card: 210 40% 98%;
-    --card-foreground: 222 47% 11%;
+    /* Card - Komponen card dengan background putih bersih */
+    --card: 0 0% 100%; /* Putih murni untuk card - kontras dengan background */
+    --card-foreground: 215 25% 20%; /* Teks di dalam card */
 
-    --popover: 214 31% 91%;
-    --popover-foreground: 222 47% 11%;
+    /* Popover - Untuk dropdown dan popup */
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 20%;
 
-    --primary: 200 98% 39%;
-    --primary-foreground: 204 100% 97%;
+    /* Primary - Warna biru utama yang vibrant tapi tetap profesional */
+    --primary: 217 91% 60%; /* Biru terang corporate - warna utama brand */
+    --primary-foreground: 0 0% 100%; /* Teks putih di atas primary */
 
-    --secondary: 215 24% 26%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary - Warna pendukung yang lebih gelap */
+    --secondary: 215 20% 93%; /* Abu-abu kebiruan sangat terang */
+    --secondary-foreground: 215 25% 20%;
 
-    --muted: 215 20% 65%;
-    --muted-foreground: 222 47% 11%;
+    /* Muted - Untuk elemen yang tidak terlalu penting */
+    --muted: 215 20% 90%; /* Abu-abu kebiruan lembut */
+    --muted-foreground: 215 15% 45%; /* Teks abu-abu medium */
 
-    --accent: 210 40% 98%;
-    --accent-foreground: 215 19% 34%;
+    /* Accent - Warna aksen untuk highlight */
+    --accent: 210 40% 96%; /* Biru sangat terang untuk hover/active state */
+    --accent-foreground: 217 91% 60%;
 
-    --destructive: 0 72% 50%;
-    --destructive-foreground: 0 85% 97%;
+    /* Destructive - Untuk error/warning */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 212 26% 83%;
-    --input: 212 26% 83%;
-    --ring: 200 98% 39%;
+    /* Border & Input - Garis pembatas yang subtle */
+    --border: 215 20% 88%; /* Border abu-abu kebiruan lembut */
+    --input: 215 20% 88%;
+    --ring: 217 91% 60%; /* Ring/focus outline menggunakan warna primary */
 
-    --radius: 0.5rem;
+    /* Border Radius - Sudut yang lebih rounded untuk tampilan modern */
+    --radius: 0.75rem; /* Lebih rounded dari default untuk kesan modern & friendly */
 
-    --sidebar-background: 0 0% 98%;
+    /* Sidebar Colors - Untuk navigation sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 215 25% 20%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 217 91% 60%;
+    --sidebar-border: 215 20% 88%;
+    --sidebar-ring: 217 91% 60%;
 
-    --sidebar-foreground: 222 47% 11%;
+    /* Chart Colors - Untuk grafik/visualisasi data */
+    --chart-1: 217 91% 60%; /* Biru primary */
+    --chart-2: 200 98% 50%; /* Biru lebih terang */
+    --chart-3: 230 80% 70%; /* Biru soft */
+    --chart-4: 215 20% 65%; /* Abu-abu kebiruan */
+    --chart-5: 215 15% 50%; /* Abu-abu medium */
 
-    --sidebar-primary: 200 98% 39%;
+    /* Font Families - Typography yang clean & profesional */
+    --font-sans:
+      "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-serif:
+      "Lora", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-mono:
+      "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
 
-    --sidebar-primary-foreground: 204 100% 97%;
+    /* Shadow System - Bayangan yang halus untuk depth/kedalaman */
+    --shadow-2xs: 0 1px 2px 0px hsl(217 91% 60% / 0.05); /* Shadow minimal dengan hint biru */
+    --shadow-xs: 0 1px 3px 0px hsl(217 91% 60% / 0.08);
+    --shadow-sm:
+      0 2px 4px -1px hsl(217 91% 60% / 0.1),
+      0 1px 2px -1px hsl(217 91% 60% / 0.06);
+    --shadow:
+      0 4px 6px -1px hsl(217 91% 60% / 0.1),
+      0 2px 4px -2px hsl(217 91% 60% / 0.08);
+    --shadow-md:
+      0 6px 12px -2px hsl(217 91% 60% / 0.12),
+      0 3px 6px -3px hsl(217 91% 60% / 0.08);
+    --shadow-lg:
+      0 10px 20px -3px hsl(217 91% 60% / 0.15),
+      0 4px 8px -4px hsl(217 91% 60% / 0.1);
+    --shadow-xl:
+      0 20px 30px -5px hsl(217 91% 60% / 0.18),
+      0 8px 12px -6px hsl(217 91% 60% / 0.12);
+    --shadow-2xl: 0 25px 50px -12px hsl(217 91% 60% / 0.25);
 
-    --sidebar-accent: 215 24% 26%;
-
-    --sidebar-accent-foreground: 210 40% 98%;
-
-    --sidebar-border: 212 26% 83%;
-
-    --sidebar-ring: 200 98% 39%;
-
-    --chart-1: 198 93% 59%;
-
-    --chart-2: 213 93% 67%;
-
-    --chart-3: 215 20% 65%;
-
-    --chart-4: 215 16% 46%;
-
-    --chart-5: 215 19% 34%;
-
-    --sidebar: 210 40% 98%;
-
-    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-
-    --font-serif: 'Lora', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-
-    --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
-
+    /* Spacing & Tracking - Untuk konsistensi jarak */
     --tracking-normal: 0em;
-
     --spacing: 0.25rem;
   }
 
+  /* 
+  ========================================
+  DARK MODE - Dark blue elegant theme
+  ========================================
+  Background gelap kebiruan dengan card yang lebih kontras
+  */
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    /* Background gelap kebiruan - navy dark */
+    --background: 220 26% 14%; /* Dark blue background seperti screenshot */
+    --foreground: 210 40% 98%; /* Text putih terang */
 
-    --card: 217 32% 17%;
+    /* Card dengan background biru gelap yang lebih terang dari background */
+    --card: 220 23% 18%; /* Card biru gelap - lebih terang dari bg */
     --card-foreground: 210 40% 98%;
 
-    --popover: 215 24% 26%;
+    --popover: 220 23% 20%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 198 93% 59%;
-    --primary-foreground: 204 80% 15%;
+    /* Primary biru terang cyan - seperti icon di screenshot */
+    --primary: 189 94% 57%; /* Cyan blue terang untuk icon & accent */
+    --primary-foreground: 220 26% 14%;
 
-    --secondary: 212 26% 83%;
-    --secondary-foreground: 228 84% 4%;
+    --secondary: 220 20% 25%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 215 16% 46%;
-    --muted-foreground: 210 40% 98%;
+    /* Muted colors untuk text secondary */
+    --muted: 220 15% 35%;
+    --muted-foreground: 215 15% 70%;
 
-    --accent: 228 84% 4%;
-    --accent-foreground: 215 20% 65%;
+    --accent: 220 23% 22%;
+    --accent-foreground: 189 94% 57%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 85% 97%;
 
-    --border: 215 19% 34%;
-    --input: 215 19% 34%;
-    --ring: 198 93% 59%;
-    --sidebar-background: 240 5.9% 10%;
+    /* Border subtle */
+    --border: 220 20% 25%;
+    --input: 220 20% 25%;
+    --ring: 189 94% 57%;
+
+    /* Sidebar colors */
+    --sidebar-background: 220 26% 12%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 198 93% 59%;
-    --sidebar-primary-foreground: 204 80% 15%;
-    --sidebar-accent: 215 20% 65%;
-    --sidebar-accent-foreground: 228 84% 4%;
-    --sidebar-border: 215 19% 34%;
-    --sidebar-ring: 198 93% 59%;
-    --chart-1: 199 95% 73%;
-    --chart-2: 211 96% 78%;
+    --sidebar-primary: 189 94% 57%;
+    --sidebar-primary-foreground: 220 26% 14%;
+    --sidebar-accent: 220 23% 20%;
+    --sidebar-accent-foreground: 189 94% 57%;
+    --sidebar-border: 220 20% 25%;
+    --sidebar-ring: 189 94% 57%;
+
+    /* Chart colors dengan cyan theme */
+    --chart-1: 189 94% 57%;
+    --chart-2: 200 98% 50%;
     --chart-3: 215 20% 65%;
     --chart-4: 215 16% 46%;
     --chart-5: 215 19% 34%;
-    --sidebar: 217 32% 17%;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --sidebar: 220 23% 18%;
+
+    /* Shadow di dark mode - lebih dalam */
+    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.3);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.4);
+    --shadow-sm:
+      0 1px 3px 0px hsl(0 0% 0% / 0.5), 0 1px 2px -1px hsl(0 0% 0% / 0.3);
+    --shadow:
+      0 1px 3px 0px hsl(0 0% 0% / 0.5), 0 1px 2px -1px hsl(0 0% 0% / 0.4);
+    --shadow-md:
+      0 1px 3px 0px hsl(0 0% 0% / 0.6), 0 2px 4px -1px hsl(0 0% 0% / 0.5);
+    --shadow-lg:
+      0 1px 3px 0px hsl(0 0% 0% / 0.7), 0 4px 6px -1px hsl(0 0% 0% / 0.6);
+    --shadow-xl:
+      0 1px 3px 0px hsl(0 0% 0% / 0.8), 0 8px 10px -1px hsl(0 0% 0% / 0.7);
+    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.9);
   }
 }
 
+/* 
+========================================
+BASE STYLES - Style dasar untuk semua elemen
+========================================
+*/
 @layer base {
+  /* Semua elemen menggunakan border-color dari design system */
   * {
     @apply border-border;
   }
 
+  /* Body styling - background dan text color dari CSS variables */
   body {
     @apply bg-background text-foreground;
+    /* Smooth scrolling untuk animasi scroll yang lebih halus */
+    scroll-behavior: smooth;
+  }
+
+  /* Heading memiliki font weight yang lebih tebal untuk hierarchy */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+/* 
+========================================
+CUSTOM UTILITIES - Helper classes tambahan
+========================================
+*/
+@layer utilities {
+  /* Gradient background untuk hero section - efek shimmer mewah */
+  .gradient-blue-shimmer {
+    background: linear-gradient(
+      135deg,
+      hsl(217, 91%, 60%) 0%,
+      hsl(200, 98%, 50%) 25%,
+      hsl(217, 91%, 60%) 50%,
+      hsl(200, 98%, 50%) 75%,
+      hsl(217, 91%, 60%) 100%
+    );
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  /* Text dengan gradient - untuk heading yang mewah */
+  .text-gradient-blue {
+    @apply bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 bg-clip-text text-transparent;
+  }
+
+  /* Glass effect - untuk card yang modern */
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20;
+  }
+
+  /* Dark mode glass effect */
+  .dark .glass-effect {
+    @apply bg-slate-900/80 border-slate-700/20;
   }
 }

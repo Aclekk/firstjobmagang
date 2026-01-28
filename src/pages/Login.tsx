@@ -28,7 +28,8 @@ const Login = () => {
         description: "Selamat datang di Helpdesk TIK.",
       });
       setIsLoading(false);
-      navigate("/my-tickets");
+      // Redirect to Home page instead of my-tickets
+      navigate("/");
     }, 1000);
   };
 
@@ -111,10 +112,7 @@ const Login = () => {
             </div>
 
             <div className="mt-4 text-center">
-              <Link
-                to="/"
-                className="text-sm text-primary hover:underline"
-              >
+              <Link to="/" className="text-sm text-primary hover:underline">
                 Kembali ke Beranda
               </Link>
             </div>

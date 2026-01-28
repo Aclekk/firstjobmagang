@@ -11,7 +11,6 @@ import ServiceDetail from "@/pages/ServiceDetail";
 import RequestForm from "@/pages/RequestForm";
 import Incident from "@/pages/Incident";
 import Login from "@/pages/Login";
-import MyTickets from "@/pages/MyTickets";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,7 +30,6 @@ const App = () => (
               <Route path="/request/:id" element={<RequestForm />} />
               <Route path="/incident" element={<Incident />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/my-tickets" element={<MyTickets />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

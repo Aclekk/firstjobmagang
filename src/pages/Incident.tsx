@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { getServiceById } from "@/data/services";
-import { submitIncident } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FormRenderer from "@/components/forms/FormRenderer";
 import { useToast } from "@/hooks/use-toast";
@@ -20,25 +19,22 @@ const Incident = () => {
 
   const handleSubmit = async (data: Record<string, unknown>) => {
     setIsLoading(true);
-    try {
-      const response = await submitIncident({ formData: data });
 
-      if (response.success) {
-        toast({
-          title: "Laporan Terkirim!",
-          description: `Nomor tiket: ${response.ticketId}. ${response.message}`,
-        });
-        navigate("/my-tickets");
-      }
-    } catch (error) {
+    // Simulate submission delay
+    setTimeout(() => {
+      // Generate incident ticket ID
+      const ticketId = `INC-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 1000)).padStart(3, "0")}`;
+
       toast({
-        variant: "destructive",
-        title: "Laporan Gagal",
-        description: "Terjadi kesalahan. Silakan coba lagi.",
+        title: "Laporan Terkirim!",
+        description: `Nomor tiket: ${ticketId}. Tim akan segera menindaklanjuti.`,
       });
-    } finally {
+
       setIsLoading(false);
-    }
+
+      // Redirect to home page
+      navigate("/");
+    }, 1000);
   };
 
   return (

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useParams, Link, Navigate, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { getServiceById } from "@/data/services";
-import { submitRequest } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FormRenderer from "@/components/forms/FormRenderer";
 import { useToast } from "@/hooks/use-toast";
@@ -21,28 +20,22 @@ const RequestForm = () => {
 
   const handleSubmit = async (data: Record<string, unknown>) => {
     setIsLoading(true);
-    try {
-      const response = await submitRequest({
-        serviceId: service.id,
-        formData: data,
+
+    // Simulate submission delay
+    setTimeout(() => {
+      // Generate ticket ID
+      const ticketId = `TKT-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 1000)).padStart(3, "0")}`;
+
+      toast({
+        title: "Pengajuan Berhasil!",
+        description: `Nomor tiket: ${ticketId}. Kami akan memproses permintaan Anda.`,
       });
 
-      if (response.success) {
-        toast({
-          title: "Pengajuan Berhasil!",
-          description: `Nomor tiket: ${response.ticketId}. ${response.message}`,
-        });
-        navigate("/my-tickets");
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Pengajuan Gagal",
-        description: "Terjadi kesalahan. Silakan coba lagi.",
-      });
-    } finally {
       setIsLoading(false);
-    }
+
+      // Redirect to home page
+      navigate("/");
+    }, 1000);
   };
 
   return (
