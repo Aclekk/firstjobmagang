@@ -57,9 +57,9 @@ const App = () => (
                 {/* VPN - TIDAK PERLU LOGIN (Public) */}
                 <Route path="/request/vpn" element={<RequestForm />} />
 
-                {/* Video Conference */}
+                {/* Dynamic Service Request Route */}
                 <Route
-                  path="/request/video-conference"
+                  path="/request/:id"
                   element={
                     <ProtectedRoute>
                       <RequestForm />

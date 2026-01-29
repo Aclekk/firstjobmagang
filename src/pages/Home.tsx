@@ -152,13 +152,6 @@ const Home = () => {
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            {/* Small badge di atas heading */}
-            <div className="mb-4 flex justify-center">
-              <span className="rounded-full bg-blue-100 px-4 py-1.5 text-sm font-medium text-blue-700 dark:bg-cyan-500/10 dark:text-cyan-400">
-                Layanan Tersedia
-              </span>
-            </div>
-
             {/* Section Title */}
             <h2 className="mb-4 text-3xl font-bold text-slate-900 dark:text-white md:text-4xl lg:text-5xl">
               Pilih Layanan yang{" "}

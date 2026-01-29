@@ -5,6 +5,7 @@ import { getServiceById } from "@/data/services";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FormRenderer from "@/components/forms/FormRenderer";
 import { useToast } from "@/hooks/use-toast";
+import VideoConferenceRequestForm from "@/components/services/VideoConferenceRequestForm";
 
 const RequestForm = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +17,22 @@ const RequestForm = () => {
 
   if (!service) {
     return <Navigate to="/services" replace />;
+  }
+
+  // Handle video-conference case
+  if (id === "video-conference") {
+    return (
+      <div className="container py-10">
+        <Link
+          to={`/services/${id}`}
+          className="mb-6 inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Kembali ke Detail Layanan
+        </Link>
+        <VideoConferenceRequestForm />
+      </div>
+    );
   }
 
   const handleSubmit = async (data: Record<string, unknown>) => {

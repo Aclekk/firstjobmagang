@@ -83,9 +83,6 @@ const Login = () => {
               <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-50">
                 Helpdesk TIK
               </CardTitle>
-              <CardDescription className="mt-2 text-slate-600 dark:text-slate-400">
-                Masuk dengan akun Diskominfo Kota Tangerang
-              </CardDescription>
             </div>
           </CardHeader>
 

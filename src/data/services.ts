@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export type FieldType = "text" | "email" | "textarea" | "select" | "date" | "time" | "number" | "file";
+export type FieldType = "text" | "email" | "textarea" | "select" | "date" | "time" | "number" | "file" | "checkbox";
 
 export interface FormField {
   name: string;
@@ -11,6 +11,15 @@ export interface FormField {
   options?: { value: string; label: string }[];
 }
 
+export interface ServiceDetails {
+  description: string;
+  benefits: string[];
+  requirements: string[];
+  process: string[];
+  timeEstimate: string;
+  supportContact: string;
+}
+
 export interface Service {
   id: string;
   title: string;
@@ -19,6 +28,7 @@ export interface Service {
   icon: string;
   route: string;
   formSchema: FormField[];
+  details?: ServiceDetails;
 }
 
 export const categories = [
@@ -67,23 +77,57 @@ export const services: Service[] = [
   },
   {
     id: "vpn",
-    title: "VPN",
-    description: "Pengajuan akses VPN untuk koneksi jaringan internal",
+    title: "Layanan VPN Pemerintah Kota Tangerang",
+    description: "Akses aman ke jaringan internal Pemerintah Kota Tangerang untuk mendukung pekerjaan dari jarak jauh",
     category: "infrastruktur",
     icon: "Shield",
     route: "/services/vpn",
+    details: {
+      description: "Layanan Virtual Private Network (VPN) Pemerintah Kota Tangerang memungkinkan akses aman ke jaringan internal pemerintah dari lokasi manapun. Dengan enkripsi tingkat tinggi, layanan ini memastikan keamanan dan kerahasiaan data selama transmisi.",
+      benefits: [
+        "Akses aman ke aplikasi dan data internal",
+        "Enkripsi data untuk keamanan maksimal",
+        "Dapat diakses dari mana saja selama terhubung internet",
+        "Dukungan teknis 24/7"
+      ],
+      requirements: [
+        "Pegawai aktif Pemerintah Kota Tangerang",
+        "Memiliki perangkat yang memenuhi spesifikasi minimum",
+        "Menyetujui kebijakan penggunaan VPN"
+      ],
+      process: [
+        "Isi formulir permohonan",
+        "Verifikasi data oleh admin",
+        "Pembuatan akun VPN",
+        "Pengiriman kredensial melalui email resmi"
+      ],
+      timeEstimate: "1-2 hari kerja",
+      supportContact: "helpdesk@tangerangkota.go.id / (021) 5517744"
+    },
     formSchema: [
       { name: "fullName", label: "Nama Lengkap", type: "text", required: true, placeholder: "Masukkan nama lengkap" },
-      { name: "unit", label: "Unit/OPD", type: "text", required: true, placeholder: "Masukkan unit kerja" },
-      { name: "accessPurpose", label: "Tujuan Akses", type: "textarea", required: true, placeholder: "Jelaskan tujuan penggunaan VPN" },
-      { name: "duration", label: "Durasi Akses", type: "select", required: true, options: [
+      { name: "jabatan", label: "Jabatan", type: "text", required: true, placeholder: "Masukkan jabatan" },
+      { name: "statusPegawai", label: "Status Pegawai", type: "select", required: true, options: [
+        { value: "asn", label: "ASN" },
+        { value: "ta", label: "Tenaga Ahli" },
+        { value: "p3k", label: "P3K" },
+        { value: "lainnya", label: "Lainnya" }
+      ]},
+      { name: "nip", label: "NIP/NIK", type: "text", required: true, placeholder: "Masukkan NIP/NIK" },
+      { name: "email", label: "Email Resmi", type: "email", required: true, placeholder: "contoh@tangerangkota.go.id" },
+      { name: "whatsapp", label: "Nomor WhatsApp", type: "text", required: true, placeholder: "62812xxxxxxxx" },
+      { name: "unit", label: "Unit Kerja/OPD", type: "text", required: true, placeholder: "Contoh: Dinas Komunikasi dan Informatika" },
+      { name: "tujuan", label: "Tujuan Penggunaan", type: "textarea", required: true, placeholder: "Jelaskan tujuan penggunaan VPN secara detail" },
+      { name: "durasi", label: "Durasi Penggunaan", type: "select", required: true, options: [
         { value: "1-bulan", label: "1 Bulan" },
         { value: "3-bulan", label: "3 Bulan" },
         { value: "6-bulan", label: "6 Bulan" },
-        { value: "1-tahun", label: "1 Tahun" },
+        { value: "1-tahun", label: "1 Tahun" }
       ]},
-      { name: "reason", label: "Alasan Pengajuan", type: "textarea", required: true, placeholder: "Jelaskan alasan kebutuhan VPN" },
-    ],
+      { name: "persetujuan", label: "Persetujuan", type: "checkbox", required: true, options: [
+        { value: "setuju", label: "Saya menyetujui syarat dan ketentuan penggunaan layanan VPN" }
+      ]}
+    ]
   },
   {
     id: "video-conference",

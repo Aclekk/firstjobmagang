@@ -1,4 +1,5 @@
 import { useParams, Link, Navigate, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
   Mail,
   PenTool,
@@ -13,17 +14,34 @@ import {
   Clock,
   CheckCircle,
   LucideIcon,
-  Sparkles,
   FileText,
   Users,
   Calendar,
   Lock,
 } from "lucide-react";
+import VpnRequestModal from "@/components/vpn/VpnRequestModal";
 import { getServiceById, categories } from "@/data/services";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const iconMap: Record<string, LucideIcon> = {
   Mail,
@@ -40,8 +58,9 @@ const iconMap: Record<string, LucideIcon> = {
 const ServiceDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const service = id ? getServiceById(id) : undefined;
+  const [isVpnModalOpen, setIsVpnModalOpen] = useState(false);
 
   if (!service) {
     return <Navigate to="/services" replace />;
@@ -53,9 +72,49 @@ const ServiceDetail = () => {
   // ✅ Check apakah layanan butuh login atau tidak
   // VPN adalah satu-satunya layanan yang PUBLIC (ga perlu login)
   const isPublicService = service.id === "vpn";
+  const isTteService = service.id === "tanda-tangan-elektronik";
+
+  const displayFields =
+    service.id === "video-conference"
+      ? [
+          { name: "tanggalPermohonan", label: "Tanggal Permohonan", required: false },
+          { name: "judulKegiatan", label: "Judul Kegiatan", required: true },
+          { name: "tanggalPelaksanaan", label: "Tanggal Pelaksanaan", required: true },
+          { name: "rapatBerulang", label: "Rapat berulang", required: false },
+          { name: "jumlahPeserta", label: "Jumlah Peserta", required: false },
+          { name: "waktuMulai", label: "Waktu Mulai", required: true },
+          { name: "waktuSelesai", label: "Waktu Selesai", required: false },
+          { name: "instansi", label: "Instansi", required: true },
+          { name: "kodeUnit", label: "Kode unit organisasi", required: false },
+          { name: "namaPemohon", label: "Nama Pemohon", required: true },
+          { name: "jabatanPemohon", label: "Jabatan Pemohon", required: true },
+          { name: "email", label: "Email", required: true },
+          { name: "whatsapp", label: "No. Whatsapp", required: false },
+          { name: "lokasiAcara", label: "Lokasi Acara", required: false },
+          { name: "perangkatDibutuhkan", label: "Perangkat yang dibutuhkan", required: false },
+          { name: "jenisKegiatan", label: "Jenis Kegiatan", required: false },
+          { name: "keterangan", label: "Keterangan", required: false },
+        ]
+      : service.formSchema.map((f) => ({
+          name: f.name,
+          label: f.label,
+          required: f.required,
+        }));
+
+  const handleResetPassphrase = () => {
+    const targetEmail = user?.email ?? "";
+    console.log({ action: "reset_passphrase", email: targetEmail });
+    alert(`Link reset passphrase akan dikirim ke email ${targetEmail || "Anda"}`);
+  };
 
   // Handler untuk tombol "Ajukan Sekarang"
   const handleRequestService = () => {
+    // Jika layanan VPN, tampilkan modal
+    if (service.id === "vpn") {
+      setIsVpnModalOpen(true);
+      return;
+    }
+    
     // Kalau layanan public (VPN) atau user sudah login, langsung ke form
     if (isPublicService || isAuthenticated) {
       navigate(`/request/${service.id}`);
@@ -118,113 +177,170 @@ const ServiceDetail = () => {
             </CardHeader>
 
             <CardContent className="space-y-6 pt-6">
-              {/* 📊 Quick Stats */}
-              <div className="grid gap-4 sm:grid-cols-3">
-                <div className="flex items-start gap-3 rounded-xl border border-slate-200/60 bg-white/80 p-4 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-900/50">
-                  <div className="rounded-lg bg-blue-100 p-2 dark:bg-blue-950/50">
-                    <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                      Waktu Proses
-                    </p>
-                    <p className="mt-1 font-bold text-slate-900 dark:text-slate-50">
-                      1-3 Hari Kerja
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 rounded-xl border border-slate-200/60 bg-white/80 p-4 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-900/50">
-                  <div className="rounded-lg bg-green-100 p-2 dark:bg-green-950/50">
-                    <Users className="h-5 w-5 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                      PIC Layanan
-                    </p>
-                    <p className="mt-1 font-bold text-slate-900 dark:text-slate-50">
-                      Tim TIK
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 rounded-xl border border-slate-200/60 bg-white/80 p-4 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-900/50">
-                  <div className="rounded-lg bg-purple-100 p-2 dark:bg-purple-950/50">
-                    <Calendar className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                      Jam Layanan
-                    </p>
-                    <p className="mt-1 font-bold text-slate-900 dark:text-slate-50">
-                      08:00 - 16:00
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* 📋 Informasi Layanan */}
-              <div>
-                <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-slate-900 dark:text-slate-50">
-                  <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  Informasi Layanan
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex items-start gap-4 rounded-xl border border-slate-200/60 bg-white/80 p-5 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-900/50">
-                    <CheckCircle className="mt-0.5 h-6 w-6 shrink-0 text-green-600 dark:text-green-400" />
-                    <div className="flex-1">
-                      <p className="mb-1 font-semibold text-slate-900 dark:text-slate-50">
-                        Persyaratan
+              {isTteService ? (
+                <div className="grid gap-6 lg:grid-cols-2">
+                  <Card className="overflow-hidden border-slate-200/60 bg-white/80 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-900/50">
+                    <div className="h-1.5 w-full bg-blue-600" />
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-50">
+                        Data Tanda Tangan Elektronik
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">
+                        Status Sertifikat Anda ISSUE berlaku sampai 19 Juni 2026
                       </p>
-                      <p className="leading-relaxed text-slate-600 dark:text-slate-400">
-                        Lengkapi seluruh formulir pengajuan dengan data yang
-                        valid dan akurat. Pastikan informasi yang diisi sesuai
-                        dengan kebutuhan layanan.
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        dengan email resmi yang terdaftar di BSrE {user?.email ?? "-"}
                       </p>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        Untuk merubah Passphrase anda dapat klik link berikut
+                      </div>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button className="w-fit bg-emerald-600 hover:bg-emerald-700">
+                            Ubah passphrase
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="sm:max-w-md">
+                          <AlertDialogHeader>
+                            <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full border-2 border-orange-300">
+                              <AlertTriangle className="h-7 w-7 text-orange-500" />
+                            </div>
+                            <AlertDialogTitle className="text-center">
+                              Anda yakin ingin merubah Passphrase anda?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-center">
+                              Link untuk mereset Passphrase akan dikirim ke email
+                              <div className="mt-1 font-semibold text-slate-900 dark:text-slate-50">
+                                {user?.email ?? "-"}
+                              </div>
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter className="sm:justify-center">
+                            <AlertDialogAction onClick={handleResetPassphrase}>
+                              Ya
+                            </AlertDialogAction>
+                            <AlertDialogCancel className="bg-red-600 text-white hover:bg-red-700 hover:text-white">
+                              Cancel
+                            </AlertDialogCancel>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="overflow-hidden border-slate-200/60 bg-white/80 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-900/50">
+                    <div className="h-1.5 w-full bg-blue-600" />
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-50">
+                        Basis Pengetahuan
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="tte-status" className="border-b-0">
+                          <AccordionTrigger className="bg-blue-100/70 px-4 py-3 text-left text-sm font-medium text-slate-900 hover:no-underline dark:bg-blue-950/40 dark:text-slate-50">
+                            Status Tanda Tangan Elektronik
+                          </AccordionTrigger>
+                          <AccordionContent className="px-4 pt-3 text-slate-600 dark:text-slate-400">
+                            lorem ipsum
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="passphrase-apa" className="border-b-0">
+                          <AccordionTrigger className="bg-blue-100/70 px-4 py-3 text-left text-sm font-medium text-slate-900 hover:no-underline dark:bg-blue-950/40 dark:text-slate-50">
+                            Apa itu Passphrase
+                          </AccordionTrigger>
+                          <AccordionContent className="px-4 pt-3 text-slate-600 dark:text-slate-400">
+                            lorem ipsum
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="tte-dipakai" className="border-b-0">
+                          <AccordionTrigger className="bg-blue-100/70 px-4 py-3 text-left text-sm font-medium text-slate-900 hover:no-underline dark:bg-blue-950/40 dark:text-slate-50">
+                            Dimana Tanda Tangan Elektronik digunakan
+                          </AccordionTrigger>
+                          <AccordionContent className="px-4 pt-3 text-slate-600 dark:text-slate-400">
+                            lorem ipsum
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="lupa-passphrase" className="border-b-0">
+                          <AccordionTrigger className="bg-blue-100/70 px-4 py-3 text-left text-sm font-medium text-slate-900 hover:no-underline dark:bg-blue-950/40 dark:text-slate-50">
+                            Bagaimana jika lupa passphrase
+                          </AccordionTrigger>
+                          <AccordionContent className="px-4 pt-3 text-slate-600 dark:text-slate-400">
+                            lorem ipsum
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : (
+                <>
+                  {/* Informasi Layanan */}
+                  <div>
+                    <h3 className="mb-4 text-xl font-bold text-slate-900 dark:text-slate-50">
+                      Informasi Layanan
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-4 rounded-xl border border-slate-200/60 bg-white/80 p-5 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-900/50">
+                        <CheckCircle className="mt-0.5 h-6 w-6 shrink-0 text-green-600 dark:text-green-400" />
+                        <div className="flex-1">
+                          <p className="mb-1 font-semibold text-slate-900 dark:text-slate-50">
+                            Persyaratan
+                          </p>
+                          <p className="leading-relaxed text-slate-600 dark:text-slate-400">
+                            Lengkapi seluruh formulir pengajuan dengan data yang
+                            valid dan akurat. Pastikan informasi yang diisi sesuai
+                            dengan kebutuhan layanan.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-4 rounded-xl border border-slate-200/60 bg-white/80 p-5 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-900/50">
+                        <Clock className="mt-0.5 h-6 w-6 shrink-0 text-blue-600 dark:text-blue-400" />
+                        <div className="flex-1">
+                          <p className="mb-1 font-semibold text-slate-900 dark:text-slate-50">
+                            Proses Pengajuan
+                          </p>
+                          <p className="leading-relaxed text-slate-600 dark:text-slate-400">
+                            Setelah pengajuan diterima, tim TIK akan melakukan
+                            verifikasi dan proses lebih lanjut. Anda akan mendapat
+                            notifikasi melalui email mengenai status pengajuan.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </>
+              )}
 
-                  <div className="flex items-start gap-4 rounded-xl border border-slate-200/60 bg-white/80 p-5 backdrop-blur-sm dark:border-slate-800/60 dark:bg-slate-900/50">
-                    <Clock className="mt-0.5 h-6 w-6 shrink-0 text-blue-600 dark:text-blue-400" />
-                    <div className="flex-1">
-                      <p className="mb-1 font-semibold text-slate-900 dark:text-slate-50">
-                        Proses Pengajuan
-                      </p>
-                      <p className="leading-relaxed text-slate-600 dark:text-slate-400">
-                        Setelah pengajuan diterima, tim TIK akan melakukan
-                        verifikasi dan proses lebih lanjut. Anda akan mendapat
-                        notifikasi melalui email mengenai status pengajuan.
-                      </p>
-                    </div>
+              {!isTteService && (
+                <div>
+                  <h3 className="mb-4 text-xl font-bold text-slate-900 dark:text-slate-50">
+                    Field yang Diperlukan
+                  </h3>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {displayFields.map((field) => (
+                      <div
+                        key={field.name}
+                        className="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900/50"
+                      >
+                        <CheckCircle className="h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
+                        <span className="flex-1 text-sm font-medium text-slate-700 dark:text-slate-300">
+                          {field.label}
+                        </span>
+                        {field.required && (
+                          <Badge variant="destructive" className="text-xs">
+                            Wajib
+                          </Badge>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
-
-              {/* ✅ Field yang Diperlukan */}
-              <div>
-                <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-slate-900 dark:text-slate-50">
-                  <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  Field yang Diperlukan
-                </h3>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {service.formSchema.map((field) => (
-                    <div
-                      key={field.name}
-                      className="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-900/50"
-                    >
-                      <CheckCircle className="h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
-                      <span className="flex-1 text-sm font-medium text-slate-700 dark:text-slate-300">
-                        {field.label}
-                      </span>
-                      {field.required && (
-                        <Badge variant="destructive" className="text-xs">
-                          Wajib
-                        </Badge>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -233,52 +349,52 @@ const ServiceDetail = () => {
         <div className="lg:col-span-1">
           <div className="sticky top-24 space-y-6">
             {/* CTA Card */}
-            <Card className="border-slate-200/60 bg-gradient-to-br from-blue-50 to-cyan-50 shadow-lg dark:border-slate-800/60 dark:from-blue-950/30 dark:to-cyan-950/20">
-              <CardContent className="space-y-4 pt-6">
-                <div className="text-center">
-                  <div className="mb-4 inline-flex items-center justify-center rounded-full bg-blue-100 p-4 dark:bg-blue-950/50">
-                    <FileText className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <h3 className="mb-2 text-xl font-bold text-slate-900 dark:text-slate-50">
-                    Ajukan Layanan
-                  </h3>
-
-                  {/* Badge untuk layanan yang butuh login */}
-                  {!isPublicService && !isAuthenticated && (
-                    <div className="mb-3 flex items-center justify-center gap-2 rounded-lg bg-amber-50 px-3 py-2 dark:bg-amber-950/20">
-                      <Lock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                      <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
-                        Perlu Login
-                      </span>
+            {!isTteService && (
+              <Card className="border-slate-200/60 bg-gradient-to-br from-blue-50 to-cyan-50 shadow-lg dark:border-slate-800/60 dark:from-blue-950/30 dark:to-cyan-950/20">
+                <CardContent className="space-y-4 pt-6">
+                  <div className="text-center">
+                    <div className="mb-4 inline-flex items-center justify-center rounded-full bg-blue-100 p-4 dark:bg-blue-950/50">
+                      <FileText className="h-8 w-8 text-blue-600 dark:text-blue-400" />
                     </div>
-                  )}
+                    <h3 className="mb-2 text-xl font-bold text-slate-900 dark:text-slate-50">
+                      Ajukan Layanan
+                    </h3>
 
-                  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                    {!isPublicService && !isAuthenticated
-                      ? "Anda perlu login terlebih dahulu untuk mengajukan layanan ini."
-                      : `Klik tombol di bawah untuk mengisi formulir pengajuan ${service.title}.`}
-                  </p>
-                </div>
+                    {!isPublicService && !isAuthenticated && (
+                      <div className="mb-3 flex items-center justify-center gap-2 rounded-lg bg-amber-50 px-3 py-2 dark:bg-amber-950/20">
+                        <Lock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                        <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                          Perlu Login
+                        </span>
+                      </div>
+                    )}
 
-                {/* Button dengan onClick handler */}
-                <Button
-                  onClick={handleRequestService}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-500 py-6 text-base font-semibold shadow-lg hover:from-blue-700 hover:to-blue-600 hover:shadow-xl dark:from-blue-500 dark:to-blue-600"
-                >
-                  {!isPublicService && !isAuthenticated ? (
-                    <>
-                      <Lock className="mr-2 h-5 w-5" />
-                      Login untuk Ajukan
-                    </>
-                  ) : (
-                    <>
-                      Ajukan Sekarang
-                      <ArrowLeft className="ml-2 h-5 w-5 rotate-180" />
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
+                    <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                      {!isPublicService && !isAuthenticated
+                        ? "Anda perlu login terlebih dahulu untuk mengajukan layanan ini."
+                        : `Klik tombol di bawah untuk mengisi formulir pengajuan ${service.title}.`}
+                    </p>
+                  </div>
+
+                  <Button
+                    onClick={handleRequestService}
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-500 py-6 text-base font-semibold shadow-lg hover:from-blue-700 hover:to-blue-600 hover:shadow-xl dark:from-blue-500 dark:to-blue-600"
+                  >
+                    {!isPublicService && !isAuthenticated ? (
+                      <>
+                        <Lock className="mr-2 h-5 w-5" />
+                        Login untuk Ajukan
+                      </>
+                    ) : (
+                      <>
+                        Ajukan Sekarang
+                        <ArrowLeft className="ml-2 h-5 w-5 rotate-180" />
+                      </>
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Help Card */}
             <Card className="border-slate-200/60 bg-white dark:border-slate-800/60 dark:bg-slate-900/50">
@@ -304,6 +420,14 @@ const ServiceDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* VPN Request Modal */}
+      {service.id === "vpn" && (
+        <VpnRequestModal 
+          open={isVpnModalOpen} 
+          onClose={() => setIsVpnModalOpen(false)} 
+        />
+      )}
     </div>
   );
 };
